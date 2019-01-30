@@ -7,7 +7,7 @@
 
 
 class Subchannel {
-    int rbStart;
+    int rbStart;    // May need to be replaced with an rbmap
     int rbEnd;
     Sci sci;
     int rsrp;
@@ -16,6 +16,21 @@ class Subchannel {
     bool isFree;
 
     // Getters and setters here
+
+    // isFree?
+    bool isFree() {return isFree;}
+
+    // Determine if rsrp < Th
+    bool isRsrpLessThan(int Th) {
+        if (sci->getRsrp() < Th)
+        {
+            return true;
+        } else return false;
+    }
+
+    // Return sci's resource reservation interval * 10
+    int getRRI() {return sci->resource_res * 10}
+
 };
 
 

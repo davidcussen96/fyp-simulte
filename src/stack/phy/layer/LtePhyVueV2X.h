@@ -32,6 +32,7 @@ protected:
     int pointerToEnd;
     int pointerToStart;
     int elapsedTime;
+    std::vector<Subchannel*> listOfSubchannels;
     void storeAirFrame(LteAirFrame* newFrame);
     LteAirFrame* extractAirFrame();
     void decodeAirFrame(LteAirFrame* frame, UserControlInfo* lteInfo);

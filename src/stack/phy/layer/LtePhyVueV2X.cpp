@@ -6,6 +6,7 @@
 #include "stack/phy/layer/LtePhyUeD2D.h"
 #include "stack/phy/packet/LteFeedbackPkt.h"
 #include "stack/d2dModeSelection/D2DModeSelectionBase.h"
+#include <math.h>
 
 Define_Module(LtePhyVueV2X);
 
@@ -28,6 +29,8 @@ void LtePhyUeD2D::initialize(int stage)
         d2dTxPower_ = par("d2dTxPower");
         d2dMulticastEnableCaptureEffect_ = par("d2dMulticastCaptureEffect");
         d2dDecodingTimer_ = NULL;
+        updatePointers_ = NULL;
+        updateSensingWindow_ = NULL;
     }
 }
 
@@ -48,13 +51,11 @@ void LtePhyUeD2D::handleSelfMessage(cMessage *msg)
         delete msg;
         d2dDecodingTimer_ = NULL;
     }
-    else
-        LtePhyUe::handleSelfMessage(msg);
-
-    if (msg->isName("updateSensingWindow"))
+    else if (msg->isName("updatePointers"))
     {
         // Reset subframe at position 1000ms to {Subchannel, Subchannel, Subchannel}.
-        std::vector<Subchannel*> subchannels = 3*{Subchannel*};
+        std::vector<Subchannel*> subchannels =
+                {new Subchannel(), new Subchannel(), new Subchannel()};
         sensingWindow[pointerToEnd] = subchannels;
 
         // Maintain pointer; Bit messy, definitely a better way of doing this.
@@ -70,6 +71,83 @@ void LtePhyUeD2D::handleSelfMessage(cMessage *msg)
         elapsedTime++;
         delete msg;
         updateSensingWindow_ = NULL;
+    }
+    else if (msg->"updateSensingWindow")
+    {
+        // For each subchannel in the subchannelList add to sensingWindow
+        // First we need to determine when the AirFrame was received.
+        curr_time = NOW;
+        int secsAgo;
+        for (std::vector<Subchannel*>::iterator it=subchannelList.begin(); it != subchannelList.end(); it++) {
+            // Determine where subchannel is in sensing window and update it
+            secsAgo = floor(curr_time - it->getTime());
+            // Depending on the rbmap we can determine the position in the
+            // inner vector (ie the subchannel).
+            // However we could just insert it and not worry about ordering
+            // of subchannel, could run into the problem of overwriting
+            (sensingWindow[secsAgo]).push_front(it);
+            // or (sensingWindow[secsAgo])[j] = it; j is 0->2.
+
+        }
+        subchannelList.clear();
+        delete msg;
+        updateSensingWindow_ = NULL;
+    }
+    else
+        LtePhyUe::handleSelfMessage(msg);
+}
+
+void LtePhyVueV2X::chooseCsr(int threshold, int t1, int t2)
+{
+    // Assuming T1=0 and T2=100
+    // empty subchannel instance or channel -> means subchannel is free
+    // nullptr means: cannot use it.
+    // TODO: Account T1 <= 4
+    curr_time = NOW;
+    int Sa[t2-t1][3] = {
+            {new Subchannel(),new Subchannel(),new Subchannel()}};
+    std::vector<vector<Subchannel*>>::iterator frame;
+    std::vector<Subchannel*>::iterator channel;
+    int i, j, offset, secsAgo, rri, x, numCsrs;
+    numCsrs = 0;
+    i = 0;
+    for (frame = sensingWindow.begin(); frame != sensingWindow.end(); frame++) {
+        if (i <= pointerToEnd)
+        {
+            offset = 999;
+        }
+        else offset = 1;
+
+        j = 0;
+        secsAgo = offset - pointerToEnd + i;
+        for (channel = frame->begin(); channel != frame->end(); channel++) {
+            if (!(channel->isSensed())) {
+                j++;
+                continue;
+            }
+
+            rri = channel->getRRI();
+            x = (secsAgo-100)*-1;
+            if (x <= 99) {
+                if (channel->isRsrpLessThan(threshold)) {
+                    Sa[x][j] = channel;     // ie. We can use this csr.
+                    numCsrs++;
+                } else {
+                    Sa[x][j] = nullptr;
+                }
+            }
+
+            j++;
+        }
+        i++;
+        // if |Sa| < 0.2 of CSRs
+        // else send Sa to MAC layer where it will choose a random CSR based on RSSI
+        if (numCsrs < 0.2(300)) {
+            threshold += 3;
+            chooseCsr(threshold);
+        } else {
+            // Send Sa to MAC layer.
+        }
     }
 }
 
@@ -93,18 +171,6 @@ void LtePhyUeD2D::handleAirFrame(cMessage* msg)
         }
 
         handoverHandler(frame, lteInfo);
-        return;
-    }
-
-    // Check if the frame is for us ( MacNodeId matches or - if this is a multicast communication - enrolled in multicast group)
-    if (lteInfo->getDestId() != nodeId_ && !(binder_->isInMulticastGroup(nodeId_, lteInfo->getMulticastGroupId())))
-    {
-        EV << "ERROR: Frame is not for us. Delete it." << endl;
-        EV << "Packet Type: " << phyFrameTypeToA((LtePhyFrameType)lteInfo->getFrameType()) << endl;
-        EV << "Frame MacNodeId: " << lteInfo->getDestId() << endl;
-        EV << "Local MacNodeId: " << nodeId_ << endl;
-        delete lteInfo;
-        delete frame;
         return;
     }
 
@@ -134,12 +200,14 @@ void LtePhyUeD2D::handleAirFrame(cMessage* msg)
             scheduleAt(NOW, d2dDecodingTimer_);                    // This then calls decodeAirFrame
         }
 
-        if (updateSensingWindow_ == NULL)
+        // TODO: Needs to be called every TTI. Where?
+        if (updatePointers_ == NULL)
         {
             // Update sensing window pointers
-            updateSensingWindow_ = new cMessage("updateSensingWindow");
-            updateSensingWindow_->setSchedulingPriority(10);
-            scheduleAt(NOW, updateSensingWindow_);
+            // Needs to occur every TTI
+            updateSensingWindow_ = new cMessage("updatePointers");
+            updateSensingWindow_->setSchedulingPriority(9);
+            scheduleAt(NOW, updatePointers_);
         }
 
         // store frame, together with related control info
@@ -351,47 +419,22 @@ void LtePhyUeD2D::storeAirFrame(LteAirFrame* newFrame)
         }
         // Create a Subchannel
         Subchannel* subchannel = new Subchannel(sci, rbmap, rsrp, rssi);
-        //rsrpMean = sum / allocatedRbs;
-        //EV << NOW << " LtePhyUeD2D::storeAirFrame - Average RSRP from node " << newInfo->getSourceId() << ": " << rsrpMean ;
+        subchannelList.push_front(subchannel);
+
+        if (updateSensingWindow_ == NULL)
+        {
+            // Needs to happen every time an AirFrame is receieved.
+            updateSensingWindow_ = new cMessage("updateSensingWindow");
+            updateSensingWindow_->setSchedulingPriority(10);
+            scheduleAt(NOW, updateSensingWindow_);
+        }
+
+        EV << NOW << " LtePhyVueV2X::storeAirFrame - from node " << newInfo->getSourceId();
     }
 
     d2dReceivedFrames_.push_back(newFrame);
     delete newFrame;
 
-    /*
-    if (!d2dReceivedFrames_.empty())
-    {
-        LteAirFrame* prevFrame = d2dReceivedFrames_.front();
-        if (!useRsrp && distance < nearestDistance_)
-        {
-            EV << "[ < nearestDistance: " << nearestDistance_ << "]" << endl;
-
-            // remove the previous frame
-            d2dReceivedFrames_.pop_back();
-            delete prevFrame;
-
-            nearestDistance_ = distance;
-            d2dReceivedFrames_.push_back(newFrame);
-        }
-        else if (rsrpMean > bestRsrpMean_)
-        {
-            EV << "[ > bestRsrp: " << bestRsrpMean_ << "]" << endl;
-
-            // remove the previous frame
-            d2dReceivedFrames_.pop_back();
-            delete prevFrame;
-
-            bestRsrpMean_ = rsrpMean;
-            bestRsrpVector_ = rsrpVector;
-            d2dReceivedFrames_.push_back(newFrame);
-        }
-        else
-        {
-            // this frame will not be decoded
-            delete newFrame;
-        }
-    }
-    */
 }
 
 LteAirFrame* LtePhyUeD2D::extractAirFrame()
