@@ -5,31 +5,36 @@
 #ifndef FYP_SIMULTE_SUBCHANNEL_H
 #define FYP_SIMULTE_SUBCHANNEL_H
 
-
+// TODO: Two constructors -> One for empty subchannels where isFree = true;
+// -> One for occupied subchannels where all values are filled and isFree = false;
 class Subchannel {
-    int rbStart;    // May need to be replaced with an rbmap
-    int rbEnd;
+private:
+    RbMap rbmap;
     Sci sci;
     int rsrp;
     int rssi;
-    bool notSensed = false;
+    bool notSensed;
     bool isFree;
 
-    // Getters and setters here
+public:
+    Subchannel();
 
-    // isFree?
-    bool isFree() {return isFree;}
-
+    Subchannel(RbMap rbmap, Sci sci);
+    // Getters and setters here also.
     // Determine if rsrp < Th
-    bool isRsrpLessThan(int Th) {
-        if (sci->getRsrp() < Th)
-        {
-            return true;
-        } else return false;
-    }
+    // TODO: Where do we get/calculate the threshold Th.
+    bool isRsrpLessThan(int Th);
 
+    RbMap getRbMap() {return rbmap;}
+    Sci getSci() {return sci;}
+    void setRsrp() {rsrp = sci->getRsrp();}
+    int getRsrp() {return rsrp;}
+    int getRssi() { return rssi;}
+    void setRssi() { rssi=sci->getRssi();}
     // Return sci's resource reservation interval * 10
     int getRRI() {return sci->resource_res * 10}
+    bool notSensed() {return notSensed;}
+    bool isFree() {return isFree;}
 
 };
 

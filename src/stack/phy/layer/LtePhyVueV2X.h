@@ -20,13 +20,13 @@ protected:
     bool d2dMulticastEnableCaptureEffect_;
     // Matrix representing our sensing window.
     std::vector<vector<Subchannel*>> sensingWindow(1000, vector<Subchannel*>(3));
-    double nearestDistance_;
-    std::vector<double> bestRsrpVector_;
-    double bestRsrpMean_;
-    std::vector<LteAirFrame*> d2dReceivedFrames_; // airframes received in the current TTI. Instead of only decoding one
+    //double nearestDistance_;
+    //std::vector<double> bestRsrpVector_;
+    //double bestRsrpMean_;
+    std::vector<LteAirFrame*> v2xReceivedFrames_; // airframes received in the current TTI. Instead of only decoding one
                                                   // like in d2d we must decode all received airframesOnly one will be
                                                   // decoded.
-    cMessage* d2dDecodingTimer_;                  // timer for triggering decoding at the end of the TTI. Started
+    cMessage* v2xDecodingTimer_;                  // timer for triggering decoding at the end of the TTI. Started
     // when the first airframe is received
     cMessage* updateSensingWindow_;                // Called every TTI to update our sensing window.
     int pointerToEnd;

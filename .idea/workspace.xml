@@ -10,15 +10,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6dfa09bb-e661-4f86-a79f-1e9f8be21d03" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/fyp-simulte.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/stack/mac/layer/LteMacVueV2X.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/stack/mac/layer/LteMacVueV2X.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stack/Subchannel/Subchannel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/stack/Subchannel/Subchannel.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stack/Subchannel/Subchannel.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/stack/Subchannel/Subchannel.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stack/mac/layer/LteMacUeRealisticD2D.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/stack/mac/layer/LteMacUeRealisticD2D.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stack/phy/layer/LtePhyVueV2X.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/stack/phy/layer/LtePhyVueV2X.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stack/phy/layer/LtePhyVueV2X.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/stack/phy/layer/LtePhyVueV2X.h" afterDir="false" />
     </list>
@@ -33,29 +28,24 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/stack/phy/layer/LtePhyVueV2X.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2758">
-              <caret line="202" column="53" selection-start-line="202" selection-start-column="53" selection-end-line="202" selection-end-column="53" />
+            <state relative-caret-position="-1779">
+              <caret line="167" column="81" selection-start-line="167" selection-start-column="81" selection-end-line="167" selection-end-column="81" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/stack/phy/layer/LtePhyEnbD2D.cc">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/stack/phy/ChannelModel/LteChannelModel.h">
+        <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacUeRealisticD2D.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-968" />
+            <state relative-caret-position="-102" />
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacUeRealisticD2D.cc">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-399">
-              <caret line="927" column="31" selection-start-line="927" selection-start-column="31" selection-end-line="927" selection-end-column="31" />
+            <state relative-caret-position="-5728">
+              <caret line="626" column="45" lean-forward="true" selection-start-line="626" selection-start-column="45" selection-end-line="626" selection-end-column="45" />
             </state>
           </provider>
         </entry>
@@ -63,38 +53,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacVueV2X.cc">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
+            <state relative-caret-position="177">
               <caret line="608" column="29" selection-start-line="608" selection-start-column="29" selection-end-line="608" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacUeD2D.cc">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="397">
-              <caret line="897" column="1" lean-forward="true" selection-start-line="897" selection-start-column="1" selection-end-line="897" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacVueV2X.h">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacUeRealisticD2D.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1218" />
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/stack/phy/layer/LtePhyVueV2X.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="34" column="47" selection-start-line="34" selection-start-column="47" selection-end-line="34" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -102,8 +62,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/stack/Subchannel/Subchannel.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="388">
-              <caret line="31" column="47" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
+            <state relative-caret-position="493">
+              <caret line="29" column="42" selection-start-line="29" selection-start-column="42" selection-end-line="29" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/stack/Subchannel/Subchannel.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="17" column="14" lean-forward="true" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
             </state>
           </provider>
         </entry>
@@ -119,6 +88,11 @@
       <find>nodeId</find>
       <find>decodeAirFrame</find>
       <find>subchannelLis</find>
+      <find>d2dDecodingTimer</find>
+      <find>receivedFrames</find>
+      <find>send</find>
+      <find>msg</find>
+      <find>macHandleD2DModeSwitch</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -129,12 +103,14 @@
       <list>
         <option value="$PROJECT_DIR$/src/stack/mac/layer/LteMacVueV2X.cc" />
         <option value="$PROJECT_DIR$/src/stack/phy/layer/LtePhyVueV2X.h" />
-        <option value="$PROJECT_DIR$/src/stack/Subchannel/Subchannel.h" />
+        <option value="$PROJECT_DIR$/src/stack/mac/layer/LteMacUeRealisticD2D.cc" />
         <option value="$PROJECT_DIR$/src/stack/phy/layer/LtePhyVueV2X.cpp" />
+        <option value="$PROJECT_DIR$/src/stack/Subchannel/Subchannel.h" />
+        <option value="$PROJECT_DIR$/src/stack/Subchannel/Subchannel.cpp" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-7" />
     <option name="width" value="697" />
     <option name="height" value="735" />
@@ -144,6 +120,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -267,7 +244,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -299,16 +275,18 @@
       <updated>1547906733316</updated>
       <workItem from="1547906741277" duration="4941000" />
       <workItem from="1548508750273" duration="27652000" />
+      <workItem from="1548950166766" duration="16392000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="32593000" />
+    <option name="totallyTimeSpent" value="48985000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="697" height="735" extended-state="0" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.46310833" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.45525903" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -398,64 +376,71 @@
     <entry file="file://$PROJECT_DIR$/src/stack/phy/layer/LtePhyEnbD2D.h">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/stack/phy/ChannelModel/LteChannelModel.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-968" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/stack/Subchannel/Subchannel.cpp">
+    <entry file="file://$PROJECT_DIR$/src/stack/phy/layer/LtePhyEnbD2D.cc">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacUeRealisticD2D.h">
+    <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacUeD2D.cc">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1218" />
+        <state relative-caret-position="15249">
+          <caret line="897" column="1" selection-start-line="897" selection-start-column="1" selection-end-line="897" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/stack/mac/packet/LteSchedulingGrant.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-306" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/stack/phy/layer/LtePhyVueV2X.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="25" column="33" selection-start-line="25" selection-start-column="33" selection-end-line="25" selection-end-column="33" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacVueV2X.h">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacUeRealisticD2D.cc">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-399">
-          <caret line="927" column="31" selection-start-line="927" selection-start-column="31" selection-end-line="927" selection-end-column="31" />
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/src/stack/phy/ChannelModel/LteChannelModel.h">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacUeD2D.cc">
+    <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacUeRealisticD2D.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="397">
-          <caret line="897" column="1" lean-forward="true" selection-start-line="897" selection-start-column="1" selection-end-line="897" selection-end-column="1" />
-        </state>
+        <state relative-caret-position="-102" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacVueV2X.cc">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
+        <state relative-caret-position="177">
           <caret line="608" column="29" selection-start-line="608" selection-start-column="29" selection-end-line="608" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/stack/phy/layer/LtePhyVueV2X.h">
+    <entry file="file://$PROJECT_DIR$/src/stack/mac/layer/LteMacUeRealisticD2D.cc">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="34" column="47" selection-start-line="34" selection-start-column="47" selection-end-line="34" selection-end-column="47" />
+        <state relative-caret-position="-5728">
+          <caret line="626" column="45" lean-forward="true" selection-start-line="626" selection-start-column="45" selection-end-line="626" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/stack/Subchannel/Subchannel.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="14" lean-forward="true" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/stack/Subchannel/Subchannel.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
-          <caret line="31" column="47" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
+        <state relative-caret-position="493">
+          <caret line="29" column="42" selection-start-line="29" selection-start-column="42" selection-end-line="29" selection-end-column="42" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/stack/phy/layer/LtePhyEnbD2D.cc">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/stack/phy/layer/LtePhyVueV2X.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2758">
-          <caret line="202" column="53" selection-start-line="202" selection-start-column="53" selection-end-line="202" selection-end-column="53" />
+        <state relative-caret-position="-1779">
+          <caret line="167" column="81" selection-start-line="167" selection-start-column="81" selection-end-line="167" selection-end-column="81" />
         </state>
       </provider>
     </entry>

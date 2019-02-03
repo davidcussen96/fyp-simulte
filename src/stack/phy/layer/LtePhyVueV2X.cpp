@@ -12,6 +12,7 @@ Define_Module(LtePhyVueV2X);
 
 LtePhyVueV2X::LtePhyVueV2X()
 {
+    // This probably aren't needed for V2X mode 4.
     handoverStarter_ = NULL;
     handoverTrigger_ = NULL;
 }
@@ -28,7 +29,7 @@ void LtePhyUeD2D::initialize(int stage)
         averageCqiD2D_ = registerSignal("averageCqiD2D");
         d2dTxPower_ = par("d2dTxPower");
         d2dMulticastEnableCaptureEffect_ = par("d2dMulticastCaptureEffect");
-        d2dDecodingTimer_ = NULL;
+        v2xDecodingTimer_ = NULL;
         updatePointers_ = NULL;
         updateSensingWindow_ = NULL;
     }
@@ -36,10 +37,10 @@ void LtePhyUeD2D::initialize(int stage)
 
 void LtePhyUeD2D::handleSelfMessage(cMessage *msg)
 {
-    if (msg->isName("d2dDecodingTimer"))
+    if (msg->isName("v2xDecodingTimer"))
     {
         // clear buffer
-        while (!d2dReceivedFrames_.empty())
+        while (!v2xReceivedFrames_.empty())
         {
             // select one frame at a time from the buffer.
             LteAirFrame* frame = extractAirFrame();
@@ -49,10 +50,11 @@ void LtePhyUeD2D::handleSelfMessage(cMessage *msg)
         }
 
         delete msg;
-        d2dDecodingTimer_ = NULL;
+        v2xDecodingTimer_ = NULL;
     }
     else if (msg->isName("updatePointers"))
     {
+        // TODO: How do we trigger this self message every TTI.
         // Reset subframe at position 1000ms to {Subchannel, Subchannel, Subchannel}.
         std::vector<Subchannel*> subchannels =
                 {new Subchannel(), new Subchannel(), new Subchannel()};
@@ -104,51 +106,82 @@ void LtePhyVueV2X::chooseCsr(int threshold, int t1, int t2)
     // nullptr means: cannot use it.
     // TODO: Account T1 <= 4
     curr_time = NOW;
-    int Sa[t2-t1][3] = {
+    Subchannel* Sa[t2-t1][3]= {
             {new Subchannel(),new Subchannel(),new Subchannel()}};
     std::vector<vector<Subchannel*>>::iterator frame;
     std::vector<Subchannel*>::iterator channel;
-    int i, j, offset, secsAgo, rri, x, numCsrs;
-    numCsrs = 0;
-    i = 0;
-    for (frame = sensingWindow.begin(); frame != sensingWindow.end(); frame++) {
-        if (i <= pointerToEnd)
-        {
-            offset = 999;
-        }
-        else offset = 1;
-
-        j = 0;
-        secsAgo = offset - pointerToEnd + i;
-        for (channel = frame->begin(); channel != frame->end(); channel++) {
-            if (!(channel->isSensed())) {
-                j++;
-                continue;
+    int i, j, offset, secsAgo, rri, x, numCsrsSa;
+    numCsrsSa = 0;
+    while (numCsrsSa < 0.2(300)) {
+        i = 0;
+        for (frame = sensingWindow.begin(); frame != sensingWindow.end(); frame++) {
+            if (i <= pointerToEnd)
+            {
+                offset = 999;
             }
+            else offset = 1;
 
-            rri = channel->getRRI();
-            x = (secsAgo-100)*-1;
-            if (x <= 99) {
-                if (channel->isRsrpLessThan(threshold)) {
-                    Sa[x][j] = channel;     // ie. We can use this csr.
-                    numCsrs++;
-                } else {
-                    Sa[x][j] = nullptr;
+            j = 0;
+            secsAgo = offset - pointerToEnd + i;
+            for (channel = frame->begin(); channel != frame->end(); channel++) {
+                if (!(channel->isSensed())) {
+                    j++;
+                    continue;
                 }
-            }
 
-            j++;
+                rri = channel->getRRI();
+                x = (secsAgo-100)*-1;
+                if (x <= 99) {
+                    if (channel->isRsrpLessThan(threshold)) {
+                        Sa[x][j] = channel;     // ie. We can use this csr. We can get rb's from subchannels rbmap
+                        numCsrsSa++;            // Time from now + index in selection window.
+                    } else {
+                        Sa[x][j] = nullptr;
+                    }
+                }
+                j++;
+            }
+            i++;
         }
-        i++;
-        // if |Sa| < 0.2 of CSRs
-        // else send Sa to MAC layer where it will choose a random CSR based on RSSI
-        if (numCsrs < 0.2(300)) {
-            threshold += 3;
-            chooseCsr(threshold);
-        } else {
-            // Send Sa to MAC layer.
+        threshold += 3;
+    }
+    // Create Sb and send to MAC layer.
+    // Iterate through Sa, set Sb is populated with free csr's and csr with min rssi.
+    // How do we store csr with current highest avg rssi value.
+    // 1. One initial pass through Sa.
+    //      a. Store csr's with rssi values.
+    //      b. count and include free csr's.
+    Subchannel* Sb[100][3] = Sa;
+    // {(rssi, x, y)}
+    std::vector< tuple<int, int, int>> rssiValues;
+    for( unsigned int x = 0; x < 100; x = x + 1 ) {
+        for (unsigned int y = 0; y < 3; y = y + 1) {
+            if (Sa[x][y] == nullptr) {
+                Sb[x][y] = nullptr; // Free subchannel.
+                numCsrsSb++;
+            } else {
+                rssi = Sa[x][y].getRssi();
+                rssiValues.push_back(make_tuple(rssi, x, y));
+            }
         }
     }
+    // 2. Sort CSR's with rssi values. Continually add CSR's until % is exceeded.
+    sort(rssiValues.rbegin(), rssiValues.rend());
+    int numCsrsSb = 0;
+    tuple<int, int, int> currentRssi;
+    while (numCsrsSb < 0.2(300) && !rssiValues.empty()) {
+        currentRssi = rssiValues.pop_back();
+        Sb[get<1>(currentRssi)][get<2>(currentRssi)] =
+                Sa[get<1>(currentRssi)][get<2>(currentRssi)];
+        numCsrsSb++;
+    }
+    // TODO: Send Sb to MAC layer. Not sure this is correct.
+    // So therefore I need to create Sb using rssi, how do i decide which csr's in Sa
+    // to include in Sb.
+    cMessage *msg = new cMessage("csr list");
+    msg->addPar("Sa") = (void *) Sa;
+    msg->par("Sa").configPointer(NULL, NULL, sizeof(Sa));
+    send(msg, upperGateOut_);
 }
 
 // TODO: ***reorganize*** method
@@ -160,6 +193,7 @@ void LtePhyUeD2D::handleAirFrame(cMessage* msg)
     LteAirFrame* frame = check_and_cast<LteAirFrame*>(msg);
     EV << "LtePhyUeD2D: received new LteAirFrame with ID " << frame->getId() << " from channel" << endl;
     //Update coordinates of this user
+    // TODO: Handover is for use with ENB's.
     if (lteInfo->getFrameType() == HANDOVERPKT)
     {
         // check if handover is already in process
@@ -193,11 +227,11 @@ void LtePhyUeD2D::handleAirFrame(cMessage* msg)
     if (d2dMulticastEnableCaptureEffect_ && binder_->isInMulticastGroup(nodeId_,lteInfo->getMulticastGroupId()))
     {
         // if not already started, auto-send a message to signal the presence of data to be decoded
-        if (d2dDecodingTimer_ == NULL)
+        if (v2xDecodingTimer_ == NULL)
         {
-            d2dDecodingTimer_ = new cMessage("d2dDecodingTimer");
-            d2dDecodingTimer_->setSchedulingPriority(10);          // last thing to be performed in this TTI
-            scheduleAt(NOW, d2dDecodingTimer_);                    // This then calls decodeAirFrame
+            v2xDecodingTimer_ = new cMessage("v2xDecodingTimer");
+            v2xDecodingTimer_->setSchedulingPriority(10);          // last thing to be performed in this TTI
+            scheduleAt(NOW, v2xDecodingTimer_);                    // This then calls decodeAirFrame
         }
 
         // TODO: Needs to be called every TTI. Where?
@@ -278,12 +312,14 @@ void LtePhyUeD2D::handleAirFrame(cMessage* msg)
     pkt->setControlInfo(lteInfo);
 
     // send decapsulated message along with result control info to upperGateOut_
+    // TODO: Is this how we send from Phy to Mac. Need this for sending Sa.
     send(pkt, upperGateOut_);
 
     if (getEnvir()->isGUI())
         updateDisplayString();
 }
 
+// TODO: Do we need the handover methods? I dont think so.
 void LtePhyUeD2D::triggerHandover()
 {
     // stop active D2D flows (go back to Infrastructure mode)
@@ -432,7 +468,7 @@ void LtePhyUeD2D::storeAirFrame(LteAirFrame* newFrame)
         EV << NOW << " LtePhyVueV2X::storeAirFrame - from node " << newInfo->getSourceId();
     }
 
-    d2dReceivedFrames_.push_back(newFrame);
+    v2xReceivedFrames_.push_back(newFrame);
     delete newFrame;
 
 }
@@ -442,7 +478,7 @@ LteAirFrame* LtePhyUeD2D::extractAirFrame()
     // implements the capture effect
     // the vector is storing the frame received from the strongest/nearest transmitter
 
-    return d2dReceivedFrames_.front();
+    return v2xReceivedFrames_.front();
 }
 
 void LtePhyUeD2D::decodeAirFrame(LteAirFrame* frame, UserControlInfo* lteInfo)
@@ -511,6 +547,8 @@ void LtePhyUeD2D::decodeAirFrame(LteAirFrame* frame, UserControlInfo* lteInfo)
 
 void LtePhyUeD2D::sendFeedback(LteFeedbackDoubleVector fbDl, LteFeedbackDoubleVector fbUl, FeedbackRequest req)
 {
+    // Do we need sendFeedback for v2x mode 4.
+    // Feedback is usually sent to the local enodeb on the quality of the channel.
     Enter_Method("SendFeedback");
     EV << "LtePhyUeD2D: feedback from Feedback Generator" << endl;
 

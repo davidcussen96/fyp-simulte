@@ -7,6 +7,12 @@
 // and cannot be removed from it.
 //
 
+// TODO: Notify phy layer that a new csr is required.
+// TODO: Retrieve info from app layer to populate sci.
+// TODO: Message to request new CSR.
+// TODO: Send a scheduling grant to phy layer notifying phy layer what csr it has chosen.
+// TODO: Create Sb using rssi to determine csr.
+
 #include "stack/mac/layer/LteMacUeRealisticD2D.h"
 #include "stack/mac/buffer/harq/LteHarqBufferRx.h"
 #include "stack/mac/buffer/LteMacQueue.h"
@@ -59,6 +65,7 @@ void LteMacUeRealisticD2D::initialize(int stage)
     }
 }
 
+// TODO: Not needed?
 //Function for create only a BSR for the eNB
 LteMacPdu* LteMacUeRealisticD2D::makeBsr(int size){
 
@@ -375,6 +382,9 @@ void LteMacUeRealisticD2D::macPduMake()
 
 void LteMacUeRealisticD2D::handleMessage(cMessage* msg)
 {
+    // If its a self message.
+    // Does the mac layer maintain the Cresel and determine when we need a new CSR.
+    // ie store its own sci.
     if (msg->isSelfMessage())
     {
         LteMacUeRealistic::handleMessage(msg);
@@ -422,6 +432,7 @@ LteMacUeRealisticD2D::macHandleGrant(cPacket* pkt)
     }
 
     // store received grant
+    // ?? Grant will now be used to notify phy layer what csr it has chosen.
     schedulingGrant_=grant;
 
     if (grant->getPeriodic())
